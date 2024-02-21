@@ -1,5 +1,9 @@
--- GTA 5 Roleplay Server: Der ultimative Entwickler-Showdown
 
+# GTA 5 Roleplay Server: Der ultimative Entwickler-Showdown
+
+Dies ist eine humorvolle Bewerbung für den GTA 5 Roleplay Server. Ziel ist es, meine Fähigkeiten als Entwickler zu demonstrieren und gleichzeitig ein wenig Spaß zu haben.
+
+```lua
 -- Importiere lebensnotwendige Bibliotheken
 local coroutine = require("coroutine")
 local math = require("math")
@@ -78,3 +82,6 @@ end
 
 -- Zeit, die Show zu starten!
 main()
+```
+
+Genießen Sie den Code und ich hoffe, wir sehen uns auf dem Server!
