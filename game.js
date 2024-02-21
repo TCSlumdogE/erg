@@ -174,7 +174,7 @@ function resizeCanvas() {
 
 let selectedSide = null;
 let scores = { Patriots: 0, Bennys: 0 };
-let health = { Patriots: 1000, Bennys: 1000 };
+let health = { Patriots: 500, Bennys: 500 };
 
 let bennysCharacter = new Image();
 bennysCharacter.src = "bennys_char.png";
