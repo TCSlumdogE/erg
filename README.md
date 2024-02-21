@@ -1,6 +1,6 @@
 # GTA 5 Roleplay Server: Der ultimative Entwickler-Showdown
 Check out ERG - Einfach Gambo: [https://tcslumdoge.github.io/erg/]  
-Habe gestern angefangen das zu coden, um meine native JS Skills zu demonstrieren.
+Habe gestern angefangen das zu coden, um meine native JS Skills zu demonstrieren, still a few bugs, but you get the idea.
 
 Dies ist eine humorvolle Bewerbung für den ERP Roleplay Server in LUA.
 # ERP: Der ultimative Entwickler-Showdown
