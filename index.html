@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ERG</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="gameHeader">
+        <div class="teamDisplay">
+            <img src="bennys.png" alt="Bennys Logo" class="teamLogo">
+            <div id="bennysScore" class="score">0</div>
+            <div class="healthBar">
+                <div id="bennysHealth" class="healthBarForeground"></div>
+            </div>
+        </div>
+        <div id="gameTitleContainer">
+            <img src="erp_logo.png" alt="Game Logo" id="mainLogo"> <!-- Game main logo -->
+            <div id="gameTitle"><b><h1>ERG - Einfach Gambo</b></h1></div>
+            <b>Endlich, Gambo!</b>
+        </div>
+        <div class="teamDisplay">
+            <img src="patriots.png" alt="Patriots Logo" class="teamLogo">
+            <div id="patriotsScore" class="score">0</div>
+            <div class="healthBar">
+                <div id="patriotsHealth" class="healthBarForeground"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="playerSelection">
+        <h2>Fraktions-Auswahl:</h2>
+        <form id="sideSelectionForm">
+            <div class="sideOption">
+                <input type="radio" id="bennys" name="playerSide" value="Bennys">
+                <label for="bennys"><img src="bennys.png" alt="Bennys Logo"></label>
+            </div>
+            <div class="sideOption">
+                <input type="radio" id="patriots" name="playerSide" value="Patriots">
+                <label for="patriots"><img src="patriots.png" alt="Patriots Logo"></label>
+            </div>
+        </form>
+    </div>
+    
+    <div id="gameCanvas">
+        <canvas id="canvas" width="1200" height="800"></canvas> <!-- Set to your desired size -->
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>

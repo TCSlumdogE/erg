@@ -1,0 +1,113 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Allows scrolling if content exceeds the viewport */
+    background-color: black;
+    display: flex;
+    flex-direction: column; /* Align elements vertically */
+    align-items: center; /* Center items horizontally */
+    justify-content: flex-start; /* Align items to the top */
+    color: white;
+    text-align: center;
+}
+
+#gameHeader {
+    display: block;
+    justify-content: space-between; /* Distributes space between items */
+    align-items: center;
+    width: 95%; /* Adjust based on your layout's size */
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#gameTitleContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#mainLogo {
+    height: 120px; /* Set the logo height */
+    width: auto; /* Maintain aspect ratio */
+}
+
+#gameTitle {
+    font-size: 24px;
+    margin-top: 10px;
+}
+
+.teamDisplay {
+    display: none; /* Display this section */
+    flex-direction: column;
+    align-items: center;
+}
+
+.teamLogo {
+    height: 50px; /* Set logo height */
+    width: auto; /* Maintain aspect ratio */
+    margin-bottom: 10px;
+}
+
+.score {
+    color: white;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.healthBar {
+    width: 200px; /* Total width of the health bar */
+    height: 20px; /* Height of the health bar */
+    background-color: grey; /* Background color */
+    margin: 0 auto; /* Center the health bar horizontally */
+    position: relative; /* Allows absolute positioning inside */
+}
+
+.healthBarForeground {
+    width: 100%; /* Start full */
+    height: 100%;
+    background-color: green; /* Foreground color */
+    position: absolute; /* Positioned inside the healthBar div */
+    top: 0;
+    left: 0;
+    transition: width 0.3s ease; /* Smooth width transition */
+}
+
+#playerSelection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#playerSelection ul, #playerSelection ol {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0;
+    margin: 0; /* Remove default margins */
+}
+
+.sideOption {
+    display: inline-block;
+    margin: 0 20px;
+    cursor: pointer;
+}
+
+.sideOption img {
+    height: 100px; /* Adjust based on your needs */
+}
+
+
+#gameCanvas {
+    width: 95vw; /* Adjust to fit the screen width */
+    height: auto; /* Maintain aspect ratio */
+    background-color: #000; /* Canvas background */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Optional shadow */
+}
+
+canvas {
+    width: 98vw; /* Make sure the canvas fills the container width */
+    height: 98vh; /* Adjust the height as needed */
+    background-color: #000000; /* Ensure canvas background is black */
+}
