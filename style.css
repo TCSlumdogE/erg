@@ -3,12 +3,12 @@ body, html {
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: auto; /* Allows scrolling if content exceeds the viewport */
+    overflow: auto; 
     background-color: black;
     display: flex;
-    flex-direction: column; /* Align elements vertically */
-    align-items: center; /* Center items horizontally */
-    justify-content: flex-start; /* Align items to the top */
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: flex-start; 
     color: white;
     text-align: center;
 }

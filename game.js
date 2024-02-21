@@ -1,9 +1,9 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const characterWidth = 100; // Define character dimensions globally for easy reference
+const characterWidth = 100;
 const characterHeight = 150;
-let enemySpeed = 100; // Speed of the enemy's movement
+let enemySpeed = 100;
 
 class Pill {
   constructor() {
@@ -12,54 +12,46 @@ class Pill {
 
   draw(ctx) {
     if (!this.collected) {
-      // Save the current context state
       ctx.save();
 
-      // Translate to the pill's location
       ctx.translate(this.x, this.y);
 
-      // Scale context horizontally
       ctx.scale(2, 1);
 
-      // Draw the pill as a circle which will be stretched into an oval due to scaling
       ctx.beginPath();
       ctx.arc(0, 0, this.radius, 0, Math.PI * 2, true);
       ctx.closePath();
 
-      // Restore to original scale for text and other drawings
       ctx.restore();
 
-      // Fill the pill with white color
       ctx.fillStyle = "white";
       ctx.fill();
 
-      // Add the text "Oxy" on the pill
-      ctx.fillStyle = "black"; // Text color
-      ctx.font = `${this.radius}px Arial`; // Set the font size based on the pill size
-      ctx.textAlign = "center"; // Center the text horizontally
-      ctx.textBaseline = "middle"; // Center the text vertically
-      ctx.fillText("Oxy", this.x, this.y); // Position the text on the pill
+      ctx.fillStyle = "black";
+      ctx.font = `${this.radius}px Arial`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("Oxy", this.x, this.y);
     }
   }
 
   reset() {
-    this.x = Math.random() * (canvas.width - 40) + 20; // Adjusting for the new pill size
+    this.x = Math.random() * (canvas.width - 40) + 20;
     this.y = Math.random() * (canvas.height - 20) + 10;
-    this.radius = 10; // Half of the intended major axis length of the ellipse
+    this.radius = 10;
     this.collected = false;
   }
 
   collect(collector) {
-    // Add parameter to identify the collector
     this.collected = true;
-    this.triggerBarrage(collector); // Trigger shooting barrage for the character who collected the pill
+    this.triggerBarrage(collector);
   }
 
   triggerBarrage(collector) {
-    const duration = 2000; // Barrage lasts for 3000 ms
+    const duration = 2000;
     const end = Date.now() + duration;
-    const interval = 400; // Shoot every 100 ms
-    const angles = 8; // Total number of directions to shoot
+    const interval = 400;
+    const angles = 8;
     const bulletsArray =
       collector === "Bennys" ? bennysBullets : patriotsBullets;
 
@@ -85,30 +77,17 @@ class Pill {
         setTimeout(shoot, interval);
       }
     };
-    shoot(); // Start the shooting barrage
+    shoot();
   }
 }
 
-let gamePill = new Pill(); // Create a new pill instance
+let gamePill = new Pill();
 
 function drawPill() {
   gamePill.draw(ctx);
 }
 
 function checkPillCollection() {
-  function checkCharacter(character, collector) {
-    if (!gamePill.collected) {
-      const distX = character.x - gamePill.x;
-      const distY = character.y - gamePill.y;
-      const distance = Math.sqrt(distX * distX + distY * distY);
-      if (distance < characterWidth / 2 + gamePill.radius) {
-        gamePill.collect(collector); // Pass the collector's identity
-        const respawnTime = Math.random() * (15000 - 5000) + 5000; // Between 5 and 15 seconds
-        setTimeout(() => gamePill.reset(), respawnTime);
-      }
-    }
-  }
-
   checkCharacter(
     {
       x: bennysCharacterX + characterWidth / 2,
@@ -116,6 +95,7 @@ function checkPillCollection() {
     },
     "Bennys"
   );
+
   checkCharacter(
     {
       x: patriotsCharacterX + characterWidth / 2,
@@ -125,13 +105,25 @@ function checkPillCollection() {
   );
 }
 
+function checkCharacter(character, collector) {
+  if (!gamePill.collected) {
+    const distX = character.x - gamePill.x;
+    const distY = character.y - gamePill.y;
+    const distance = Math.sqrt(distX * distX + distY * distY);
+    if (distance < characterWidth / 2 + gamePill.radius) {
+      gamePill.collect(collector);
+      const respawnTime = Math.random() * (15000 - 5000) + 5000;
+      setTimeout(() => gamePill.reset(), respawnTime);
+    }
+  }
+}
+
 class Bullet {
   constructor(x, y, velocityX, velocityY) {
-    // Add velocityY parameter
     this.x = x;
     this.y = y;
     this.velocityX = velocityX;
-    this.velocityY = velocityY || 0; // Set default value to maintain compatibility
+    this.velocityY = velocityY || 0;
     this.speed = 7;
     this.width = 10;
     this.height = 5;
@@ -139,11 +131,11 @@ class Bullet {
 
   move() {
     this.x += this.velocityX * this.speed;
-    this.y += (this.velocityY || 0) * this.speed; // Move in Y direction if velocityY is provided
+    this.y += (this.velocityY || 0) * this.speed;
   }
 
   draw(ctx) {
-    ctx.fillStyle = "yellow"; // Bullet color
+    ctx.fillStyle = "yellow";
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 }
@@ -157,18 +149,16 @@ let enemyMoveInterval = 750;
 let enemyLastMoveTime = Date.now();
 
 window.addEventListener("resize", resizeCanvas, false);
-resizeCanvas(); // Call at game start to set initial size
+resizeCanvas();
 
-// Reload timer variables
 let lastBulletShotTime = 0;
-const reloadInterval = 5000; // 5 seconds reload time
+const reloadInterval = 5000;
 
 function resizeCanvas() {
-  const maxWidth = window.innerWidth * 0.98; // Increase to 98% of the window width
-  const maxHeight = window.innerHeight * 0.75; // Adjust to 75% of the window height or as needed
-  const aspectRatio = 16 / 9; // Adjust this to your game's aspect ratio if different
+  const maxWidth = window.innerWidth * 0.98;
+  const maxHeight = window.innerHeight * 0.75;
+  const aspectRatio = 16 / 9;
 
-  // Calculate the best width and height for the canvas
   let newWidth = maxWidth;
   let newHeight = newWidth / aspectRatio;
   if (newHeight > maxHeight) {
@@ -184,7 +174,7 @@ function resizeCanvas() {
 
 let selectedSide = null;
 let scores = { Patriots: 0, Bennys: 0 };
-let health = { Patriots: 500, Bennys: 500 };
+let health = { Patriots: 1000, Bennys: 1000 };
 
 let bennysCharacter = new Image();
 bennysCharacter.src = "bennys_char.png";
@@ -207,11 +197,11 @@ patriotsLogoElement.addEventListener("click", () => {
   startGame();
 });
 
-let animationFrameId; // Declare this at the top of your script
+let animationFrameId;
 
 function startGame() {
   let obstacles = [];
-  generateRandomObstacles(); // Generate new obstacles for the game
+  generateRandomObstacles();
 
   if (animationFrameId) {
     cancelAnimationFrame(animationFrameId);
@@ -220,8 +210,8 @@ function startGame() {
   document.getElementById("playerSelection").style.display = "none";
   document.getElementById("gameCanvas").style.display = "block";
   let gameHeader = document.getElementById("gameHeader");
-  gameHeader.classList.add("teamVisible"); // Add class to make header visible
-  gameHeader.style.display = "flex"; // Change display to flex for game screen
+  gameHeader.classList.add("teamVisible");
+  gameHeader.style.display = "flex";
 
   let teamDisplays = document.getElementsByClassName("teamDisplay");
   for (let i = 0; i < teamDisplays.length; i++) {
@@ -238,26 +228,24 @@ function startGame() {
   animationFrameId = requestAnimationFrame(gameLoop);
 }
 
-// Define a property to track the direction each character is facing
-let bennysDirection = 1; // 1 for facing right, -1 for facing left
-let patriotsDirection = -1; // -1 for facing left, 1 for facing right
+let bennysDirection = 1;
+let patriotsDirection = -1;
 
-let numberOfObstacles = 8; // Change this to how many obstacles you want
+let numberOfObstacles = 8;
 let obstacles = [];
 
-// Adjust obstacle velocities to make them move slower
-let obstacleMinVelocity = -1; // Lower limit for obstacle velocity
-let obstacleMaxVelocity = 1; // Upper limit for obstacle velocity
+let obstacleMinVelocity = -1;
+let obstacleMaxVelocity = 1;
 
 function generateRandomObstacles() {
   obstacles = [];
   for (let i = 0; i < numberOfObstacles; i++) {
-    let width = Math.random() * (150 - 50) + 50; // Random width
-    let height = Math.random() * (100 - 30) + 30; // Random height
+    let width = Math.random() * (150 - 50) + 50;
+    let height = Math.random() * (100 - 30) + 30;
     let x = Math.random() * (canvas.width - width);
     let y = Math.random() * (canvas.height - height);
-    let vx = Math.random() * 1.5 - 0.75; // Slower x velocity, between -0.75 and 0.75
-    let vy = Math.random() * 1.5 - 0.75; // Slower y velocity, same range
+    let vx = Math.random() * 1.5 - 0.75;
+    let vy = Math.random() * 1.5 - 0.75;
 
     obstacles.push({ x, y, width, height, vx, vy });
   }
@@ -265,83 +253,68 @@ function generateRandomObstacles() {
 
 function drawObstacles() {
   obstacles.forEach((obstacle, index) => {
-    // Alternate between drawing alpha and beta for each obstacle
-    const text = index % 2 === 0 ? "α" : "β"; // α for alpha, β for beta
-    ctx.font = "48px serif"; // Adjust size and font as desired
-    ctx.fillStyle = "red"; // Change color to make it stand out
+    const text = index % 2 === 0 ? "α" : "β";
+    ctx.font = "48px serif";
+    ctx.fillStyle = "red";
     ctx.fillText(text, obstacle.x, obstacle.y);
   });
 }
 
 function updateObstacles() {
   obstacles.forEach((obstacle) => {
-    // Existing movement logic
     obstacle.x += obstacle.vx;
     obstacle.y += obstacle.vy;
 
-    // Check collision with Bennys character
     if (
       bennysCharacterX < obstacle.x + obstacle.width &&
       bennysCharacterX + characterWidth > obstacle.x &&
       bennysCharacterY < obstacle.y + obstacle.height &&
       bennysCharacterY + characterHeight > obstacle.y
     ) {
-      // Calculate the center of both obstacle and character
       const obstacleCenterX = obstacle.x + obstacle.width / 2;
       const obstacleCenterY = obstacle.y + obstacle.height / 2;
       const characterCenterX = bennysCharacterX + characterWidth / 2;
       const characterCenterY = bennysCharacterY + characterHeight / 2;
 
-      // Calculate the direction vector from character to obstacle
       const directionX = obstacleCenterX - characterCenterX;
       const directionY = obstacleCenterY - characterCenterY;
 
-      // Calculate the distance between character and obstacle centers
       const distance = Math.sqrt(
         directionX * directionX + directionY * directionY
       );
 
-      // Normalize the direction vector
       const normalizedDirectionX = directionX / distance;
       const normalizedDirectionY = directionY / distance;
 
-      // Adjust the obstacle velocity based on the normalized direction
-      obstacle.vx = (normalizedDirectionX * enemySpeed) / 10; // Adjust the division factor for desired speed
-      obstacle.vy = (normalizedDirectionY * enemySpeed) / 10; // Adjust the division factor for desired speed
+      obstacle.vx = (normalizedDirectionX * enemySpeed) / 10;
+      obstacle.vy = (normalizedDirectionY * enemySpeed) / 10;
     }
 
-    // Check collision with Patriots character
     if (
       patriotsCharacterX < obstacle.x + obstacle.width &&
       patriotsCharacterX + characterWidth > obstacle.x &&
       patriotsCharacterY < obstacle.y + obstacle.height &&
       patriotsCharacterY + characterHeight > obstacle.y
     ) {
-      // Calculate the center of both obstacle and character
       const obstacleCenterX = obstacle.x + obstacle.width / 2;
       const obstacleCenterY = obstacle.y + obstacle.height / 2;
       const characterCenterX = patriotsCharacterX + characterWidth / 2;
       const characterCenterY = patriotsCharacterY + characterHeight / 2;
 
-      // Calculate the direction vector from character to obstacle
       const directionX = obstacleCenterX - characterCenterX;
       const directionY = obstacleCenterY - characterCenterY;
 
-      // Calculate the distance between character and obstacle centers
       const distance = Math.sqrt(
         directionX * directionX + directionY * directionY
       );
 
-      // Normalize the direction vector
       const normalizedDirectionX = directionX / distance;
       const normalizedDirectionY = directionY / distance;
 
-      // Adjust the obstacle velocity based on the normalized direction
-      obstacle.vx = (normalizedDirectionX * enemySpeed) / 10; // Adjust the division factor for desired speed
-      obstacle.vy = (normalizedDirectionY * enemySpeed) / 10; // Adjust the division factor for desired speed
+      obstacle.vx = (normalizedDirectionX * enemySpeed) / 10;
+      obstacle.vy = (normalizedDirectionY * enemySpeed) / 10;
     }
 
-    // Check collision with canvas boundaries and reverse direction if necessary
     if (obstacle.x <= 0 || obstacle.x + obstacle.width >= canvas.width) {
       obstacle.vx = -obstacle.vx;
     }
@@ -358,7 +331,6 @@ function isCollidingWithCharacter(
   charWidth,
   charHeight
 ) {
-  // This checks if there is any collision
   return (
     charX < obstacle.x + obstacle.width &&
     charX + charWidth > obstacle.x &&
@@ -374,22 +346,19 @@ function isCollidingWithAnyObstacle(x, y) {
 }
 
 function spawnPill() {
-  // Ensure the pill is not marked as collected
   gamePill.collected = false;
 
-  // Randomly set new position for the pill
-  gamePill.x = Math.random() * (canvas.width - 20) + 10; // Avoid spawning too close to the edges
+  gamePill.x = Math.random() * (canvas.width - 20) + 10;
   gamePill.y = Math.random() * (canvas.height - 20) + 10;
 }
 
 function gameLoop() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   updateObstacles();
   drawObstacles();
 
-  drawPill(); // Draw the pill if it's not been collected
+  drawPill();
 
-  // Draw the characters with the correct direction
   drawCharacter(
     bennysCharacter,
     bennysCharacterX,
@@ -407,58 +376,46 @@ function gameLoop() {
     patriotsDirection
   );
 
-  // Update bullets
   updateBullets(bennysBullets, ctx, canvas.width, canvas.height);
   updateBullets(patriotsBullets, ctx, canvas.width, canvas.height);
 
-  // Draw scores and health
   drawScoresAndHealth();
 
-  // AI Movement and Actions
   if (selectedSide === "Bennys") {
     enemyAI("Patriots");
   } else if (selectedSide === "Patriots") {
     enemyAI("Bennys");
   }
 
-  // Check for game end conditions
   checkCollisions();
 
-  // Check for pill collection for both characters
   checkPillCollection();
 
-  // Continue the game loop
+  checkCharacterCollision();
+
   requestAnimationFrame(gameLoop);
 }
 
-// Function to draw a character with the option to flip horizontally
 function drawCharacter(characterImage, x, y, width, height, direction) {
-  ctx.save(); // Save the current context state
+  ctx.save();
 
   if (characterImage === patriotsCharacter) {
-    // For the Patriots character, we adjust the flipping logic:
-    // Now if moving right, we flip the image, and if moving left, we draw it normally.
     if (direction === 1) {
-      // If moving right, flip image
       ctx.scale(-1, 1);
       ctx.drawImage(characterImage, -x - width, y, width, height);
     } else {
-      // If moving left, draw normally
       ctx.drawImage(characterImage, x, y, width, height);
     }
   } else {
-    // For the Bennys character or any other characters, keep the original logic
     if (direction === -1) {
-      // If facing left, flip image
       ctx.scale(-1, 1);
       ctx.drawImage(characterImage, -x - width, y, width, height);
     } else {
-      // If facing right, draw as normal
       ctx.drawImage(characterImage, x, y, width, height);
     }
   }
 
-  ctx.restore(); // Restore the original context state
+  ctx.restore();
 }
 
 function drawScoresAndHealth() {
@@ -469,8 +426,7 @@ function drawScoresAndHealth() {
     "patriotsScore"
   ).textContent = `Patriots: ${scores.Patriots}`;
 
-  // Update widths of health bars based on current health
-  const bennysHealthPercent = (health.Bennys / 500) * 200; // Assuming 200 is the total width for the health bar
+  const bennysHealthPercent = (health.Bennys / 500) * 200;
   const patriotsHealthPercent = (health.Patriots / 500) * 200;
   document.getElementById(
     "bennysHealth"
@@ -488,8 +444,8 @@ function checkCollisions() {
       bullet.y < patriotsCharacterY + characterHeight &&
       bullet.y + bullet.height > patriotsCharacterY
     ) {
-      health.Patriots -= 10; // Adjust damage as needed
-      bennysBullets.splice(index, 1); // Remove the bullet
+      health.Patriots -= 10;
+      bennysBullets.splice(index, 1);
       if (health.Patriots <= 0) endGame();
     }
   });
@@ -501,8 +457,8 @@ function checkCollisions() {
       bullet.y < bennysCharacterY + characterHeight &&
       bullet.y + bullet.height > bennysCharacterY
     ) {
-      health.Bennys -= 10; // Adjust damage as needed
-      patriotsBullets.splice(index, 1); // Remove the bullet
+      health.Bennys -= 10;
+      patriotsBullets.splice(index, 1);
       if (health.Bennys <= 0) endGame();
     }
   });
@@ -511,88 +467,59 @@ function checkCollisions() {
 function enemyAI(enemy) {
   const now = Date.now();
 
-  // Set default target to player's position
-  let targetX =
-    selectedSide === "Bennys" ? bennysCharacterX : patriotsCharacterX;
-  let targetY =
-    selectedSide === "Bennys" ? bennysCharacterY : patriotsCharacterY;
+  let targetX = gamePill.collected
+    ? selectedSide === "Bennys"
+      ? bennysCharacterX
+      : patriotsCharacterX
+    : gamePill.x;
+  let targetY = gamePill.collected
+    ? selectedSide === "Bennys"
+      ? bennysCharacterY
+      : patriotsCharacterY
+    : gamePill.y;
 
   let enemyX = enemy === "Patriots" ? patriotsCharacterX : bennysCharacterX;
   let enemyY = enemy === "Patriots" ? patriotsCharacterY : bennysCharacterY;
 
-  // Check if the pill is available and prioritize it
-  if (!gamePill.collected) {
-    targetX = gamePill.x;
-    targetY = gamePill.y;
+  const speedAdjustmentFactor = (now - enemyLastMoveTime) / 1000;
+  const increasedSpeed = 100 * speedAdjustmentFactor;
+
+  let moveX = (targetX > enemyX ? 1 : -1) * increasedSpeed;
+  let moveY = (targetY > enemyY ? 1 : -1) * increasedSpeed;
+
+  let proposedX = enemyX + moveX;
+  let proposedY = enemyY + moveY;
+
+  if (
+    !isCollidingWithObstacle(proposedX, enemyY, characterWidth, characterHeight)
+  ) {
+    enemyX = proposedX;
   }
 
-  const increasedSpeed = 100; // Adjust for a more appropriate AI movement speed
-
-  if (now - enemyLastMoveTime > enemyMoveInterval) {
-    let moveX = targetX > enemyX ? increasedSpeed : -increasedSpeed;
-    let moveY = targetY > enemyY ? increasedSpeed : -increasedSpeed;
-
-    // Add randomness to prevent direct mirroring if targeting player
-    if (gamePill.collected) {
-      if (Math.random() > 0.5) {
-        moveX += (Math.random() - 0.5) * increasedSpeed;
-      }
-      if (Math.random() > 0.5) {
-        moveY += (Math.random() - 0.5) * increasedSpeed;
-      }
-    }
-
-    // Proposed new positions considering obstacles
-    let proposedX = enemyX + moveX;
-    let proposedY = enemyY + moveY;
-
-    // Check for obstacle collisions before updating positions
-    if (
-      !isCollidingWithObstacle(
-        proposedX,
-        enemyY,
-        characterWidth,
-        characterHeight
-      )
-    ) {
-      enemyX = Math.max(Math.min(proposedX, canvas.width - characterWidth), 0); // Ensure within bounds
-    }
-
-    if (
-      !isCollidingWithObstacle(
-        enemyX,
-        proposedY,
-        characterWidth,
-        characterHeight
-      )
-    ) {
-      enemyY = Math.max(
-        Math.min(proposedY, canvas.height - characterHeight),
-        0
-      ); // Ensure within bounds
-    }
-
-    // Update global position variables
-    if (enemy === "Bennys") {
-      bennysCharacterX = enemyX;
-      bennysCharacterY = enemyY;
-      bennysDirection = moveX > 0 ? 1 : -1;
-    } else {
-      patriotsCharacterX = enemyX;
-      patriotsCharacterY = enemyY;
-      patriotsDirection = moveX > 0 ? 1 : -1;
-    }
-
-    // AI shooting logic, may shoot if not prioritizing pill
-    if (Math.random() < 0.3 && gamePill.collected) {
-      shootBullet(enemy);
-    }
-
-    enemyLastMoveTime = now;
+  if (
+    !isCollidingWithObstacle(enemyX, proposedY, characterWidth, characterHeight)
+  ) {
+    enemyY = proposedY;
   }
+
+  if (enemy === "Bennys") {
+    bennysCharacterX = enemyX;
+    bennysCharacterY = enemyY;
+    bennysDirection = moveX > 0 ? 1 : -1;
+  } else {
+    patriotsCharacterX = enemyX;
+    patriotsCharacterY = enemyY;
+    patriotsDirection = moveX > 0 ? 1 : -1;
+  }
+
+  if (Math.random() < 0.3 && gamePill.collected) {
+    shootBullet(enemy);
+  }
+
+  enemyLastMoveTime = now;
 }
 
-ctx.restore(); // Restore the original context state
+ctx.restore();
 
 function isCollidingWithObstacle(newX, newY, characterWidth, characterHeight) {
   return obstacles.some(
@@ -605,9 +532,9 @@ function isCollidingWithObstacle(newX, newY, characterWidth, characterHeight) {
 }
 
 function handleCharacterMovement(event) {
-  if (!selectedSide) return; // Exit if no side has been selected
+  if (!selectedSide) return;
 
-  const speed = 15; // Speed of character movement
+  const speed = 15;
   let newX, newY;
 
   if (selectedSide === "Bennys") {
@@ -631,7 +558,7 @@ function handleCharacterMovement(event) {
         newX = Math.max(0, bennysCharacterX - speed);
         if (!isCollidingWithAnyObstacle(newX, bennysCharacterY)) {
           bennysCharacterX = newX;
-          bennysDirection = -1; // Update direction when moving left
+          bennysDirection = -1;
         }
         break;
       case "ArrowRight":
@@ -641,12 +568,11 @@ function handleCharacterMovement(event) {
         );
         if (!isCollidingWithAnyObstacle(newX, bennysCharacterY)) {
           bennysCharacterX = newX;
-          bennysDirection = 1; // Update direction when moving right
+          bennysDirection = 1;
         }
         break;
     }
   } else if (selectedSide === "Patriots") {
-    // Repeat the same logic for Patriots character
     switch (event.key) {
       case "ArrowUp":
         newY = Math.max(0, patriotsCharacterY - speed);
@@ -667,7 +593,7 @@ function handleCharacterMovement(event) {
         newX = Math.max(0, patriotsCharacterX - speed);
         if (!isCollidingWithAnyObstacle(newX, patriotsCharacterY)) {
           patriotsCharacterX = newX;
-          patriotsDirection = -1; // Update direction when moving left
+          patriotsDirection = -1;
         }
         break;
       case "ArrowRight":
@@ -677,73 +603,69 @@ function handleCharacterMovement(event) {
         );
         if (!isCollidingWithAnyObstacle(newX, patriotsCharacterY)) {
           patriotsCharacterX = newX;
-          patriotsDirection = 1; // Update direction when moving right
+          patriotsDirection = 1;
         }
         break;
     }
   }
 
-  // Handle shooting
   if (event.key === " ") {
-    shootBullet(selectedSide); // Shoot bullet on spacebar press
+    shootBullet(selectedSide);
   }
 }
 
-// Flags to track whether each player can shoot
 let bennysCanShoot = true;
 let patriotsCanShoot = true;
 
 function shootBullet(fromSide) {
-  if (
-    (fromSide === "Bennys" && !bennysCanShoot) ||
-    (fromSide === "Patriots" && !patriotsCanShoot)
-  ) {
-    return; // Exit function if the character is currently unable to shoot
-  }
+  const existingBullets =
+    fromSide === "Bennys" ? bennysBullets : patriotsBullets;
+  if (existingBullets.length === 0) {
+    const bulletOffsetY = characterHeight / 2;
+    let startX, startY, velocityX;
 
-  // Calculate the starting position of the bullet based on the character's current position
-  const bulletOffsetY = characterHeight / 2; // Center the bullet relative to the character
-  let startX, startY, velocityX;
-
-  if (fromSide === "Bennys") {
-    startX =
-      bennysCharacterX +
-      characterWidth -
-      (bennysDirection === -1 ? characterWidth : 0); // Adjust start X based on the direction
-    startY = bennysCharacterY + bulletOffsetY;
-    velocityX = bennysDirection; // The bullet's horizontal direction matches the character's
-    bennysBullets.push(new Bullet(startX, startY, velocityX));
-    bennysCanShoot = false; // Prevent immediate subsequent shots
-    setTimeout(() => (bennysCanShoot = true), reloadInterval); // Reset shooting ability after reloadInterval
-  } else if (fromSide === "Patriots") {
-    startX =
-      patriotsCharacterX + (patriotsDirection === 1 ? 0 : characterWidth); // Adjust for direction
-    startY = patriotsCharacterY + bulletOffsetY;
-    velocityX = patriotsDirection; // The bullet moves in the direction the character is facing
-    patriotsBullets.push(new Bullet(startX, startY, velocityX));
-    patriotsCanShoot = false; // Prevent immediate subsequent shots
-    setTimeout(() => (patriotsCanShoot = true), reloadInterval); // Reset shooting ability after reloadInterval
+    if (fromSide === "Bennys" && bennysCanShoot) {
+      startX = bennysCharacterX + (bennysDirection === 1 ? characterWidth : 0);
+      startY = bennysCharacterY + bulletOffsetY;
+      velocityX = bennysDirection * 7;
+      bennysBullets.push(new Bullet(startX, startY, velocityX, 0));
+      bennysCanShoot = false;
+      setTimeout(() => {
+        bennysCanShoot = true;
+      }, reloadInterval);
+    } else if (fromSide === "Patriots" && patriotsCanShoot) {
+      startX =
+        patriotsCharacterX + (patriotsDirection === 1 ? 0 : characterWidth);
+      startY = patriotsCharacterY + bulletOffsetY;
+      velocityX = patriotsDirection * 7;
+      patriotsBullets.push(new Bullet(startX, startY, velocityX, 0));
+      patriotsCanShoot = false;
+      setTimeout(() => {
+        patriotsCanShoot = true;
+      }, reloadInterval);
+    }
   }
 }
-
 
 function generateRandomObstacle() {
-  let width = Math.random() * (150 - 50) + 50; // Random width between 50 and 150
-  let height = Math.random() * (100 - 30) + 30; // Random height between 30 and 100
-  let x = Math.random() * (canvas.width - width); // Random x position within canvas
-  let y = Math.random() * (canvas.height - height); // Random y position within canvas
-  let vx = Math.random() * (obstacleMaxVelocity - obstacleMinVelocity) + obstacleMinVelocity; // Random velocityX
-  let vy = Math.random() * (obstacleMaxVelocity - obstacleMinVelocity) + obstacleMinVelocity; // Random velocityY
+  let width = Math.random() * (150 - 50) + 50;
+  let height = Math.random() * (100 - 30) + 30;
+  let x = Math.random() * (canvas.width - width);
+  let y = Math.random() * (canvas.height - height);
+  let vx =
+    Math.random() * (obstacleMaxVelocity - obstacleMinVelocity) +
+    obstacleMinVelocity;
+  let vy =
+    Math.random() * (obstacleMaxVelocity - obstacleMinVelocity) +
+    obstacleMinVelocity;
   return { x, y, width, height, vx, vy };
 }
-
 
 function updateBullets(bullets, ctx, canvasWidth, canvasHeight) {
   bullets.forEach((bullet, index) => {
     bullet.move();
-    let bulletCollided = false; // Flag to check if the bullet collided
+    let bulletCollided = false;
 
-    // Check collision with obstacles and handle healing and respawning
     for (
       let obstacleIndex = 0;
       obstacleIndex < obstacles.length;
@@ -758,20 +680,19 @@ function updateBullets(bullets, ctx, canvasWidth, canvasHeight) {
       ) {
         bulletCollided = true;
         const shooter = bullets === bennysBullets ? "Bennys" : "Patriots";
-        // Heal and remove obstacle if shooter is not at full health
+
         if (health[shooter] < 500) {
-          obstacles.splice(obstacleIndex, 1); // Remove the hit obstacle
-          health[shooter] = Math.min(health[shooter] + 20, 500); // Heal the shooter
-          // Respawn the obstacle after a random time
+          obstacles.splice(obstacleIndex, 1);
+          health[shooter] = Math.min(health[shooter] + 20, 500);
+
           setTimeout(() => {
             obstacles.push(generateRandomObstacle());
-          }, Math.random() * (20000 - 5000) + 5000); // Between 5 and 20 seconds
+          }, Math.random() * (20000 - 5000) + 5000);
         }
-        break; // Exit the loop once a collision is processed
+        break;
       }
     }
 
-    // Check collision with players
     if (!bulletCollided) {
       if (
         bullets === bennysBullets &&
@@ -800,7 +721,6 @@ function updateBullets(bullets, ctx, canvasWidth, canvasHeight) {
       }
     }
 
-    // Remove bullets that are off-screen, have collided with a player, or hit an obstacle
     if (
       bulletCollided ||
       bullet.x > canvasWidth ||
@@ -810,10 +730,9 @@ function updateBullets(bullets, ctx, canvasWidth, canvasHeight) {
     ) {
       bullets.splice(index, 1);
     } else {
-      bullet.draw(ctx); // Draw the bullet if it hasn't collided
+      bullet.draw(ctx);
     }
 
-    // Reset shooting capability if the bullet has left the screen or collided
     if (bulletCollided) {
       if (bullets === bennysBullets) {
         bennysCanShoot = true;
@@ -822,6 +741,25 @@ function updateBullets(bullets, ctx, canvasWidth, canvasHeight) {
       }
     }
   });
+}
+
+function checkCharacterCollision() {
+  const dx = bennysCharacterX - patriotsCharacterX;
+  const dy = bennysCharacterY - patriotsCharacterY;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (distance < characterWidth) {
+    const bounceFactor = 1.5;
+    const minSeparation = characterWidth * bounceFactor;
+    const overlap = minSeparation - distance;
+    const adjustX = (overlap / distance) * dx;
+    const adjustY = (overlap / distance) * dy;
+
+    bennysCharacterX += adjustX / 2;
+    bennysCharacterY += adjustY / 2;
+    patriotsCharacterX -= adjustX / 2;
+    patriotsCharacterY -= adjustY / 2;
+  }
 }
 
 function endGame() {
@@ -833,15 +771,14 @@ function endGame() {
 
   let gameHeader = document.getElementById("gameHeader");
   gameHeader.classList.remove("teamVisible");
-  gameHeader.style.display = "block"; // Change back to block for selection screen
+  gameHeader.style.display = "block";
 
   let teamDisplays = document.getElementsByClassName("teamDisplay");
   for (let element of teamDisplays) {
     element.style.display = "none";
   }
 
-  location.reload(); // Consider removing this if you want to preserve game state or manage reset differently
+  location.reload();
 }
 
-// Call resizeCanvas at the end to ensure all variables are set before drawing
 resizeCanvas();
